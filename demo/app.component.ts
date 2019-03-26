@@ -1,5 +1,5 @@
+import { HashLocationStrategy, Location, LocationStrategy } from '@angular/common';
 import { Component, ViewEncapsulation } from '@angular/core';
-import { Location, LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 @Component({
   selector: 'app',
@@ -71,6 +71,7 @@ import { Location, LocationStrategy, HashLocationStrategy } from '@angular/commo
               <li><a href="#dynamic" (click)="state='dynamic'">Dynamic Row Height</a></li>
               <li><a href="#row-details" (click)="state='row-details'">Row Detail</a></li>
               <li><a href="#responsive" (click)="state='responsive'">Responsive</a></li>
+              <li><a href="#draggable" (click)="state='draggable'">Drag & Drop</a></li>
             </ul>
           </li>
           <li>
@@ -144,6 +145,7 @@ import { Location, LocationStrategy, HashLocationStrategy } from '@angular/commo
         <multiple-tables-demo *ngIf="state === 'multiple-tables'"></multiple-tables-demo>
         <row-details-demo *ngIf="state === 'row-details'"></row-details-demo>
         <responsive-demo *ngIf="state === 'responsive'"></responsive-demo>
+        <row-drag-demo *ngIf="state === 'draggable'"></row-drag-demo>
         <filter-demo *ngIf="state === 'filter'"></filter-demo>
         <tabs-demo *ngIf="state === 'hidden'"></tabs-demo>
         <live-data-demo *ngIf="state === 'live'"></live-data-demo>

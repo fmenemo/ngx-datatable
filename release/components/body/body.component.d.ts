@@ -1,7 +1,7 @@
-import { ChangeDetectorRef, EventEmitter, OnDestroy, OnInit } from '@angular/core';
-import { SelectionType } from '../../types';
-import { RowHeightCache } from '../../utils';
-import { ScrollerComponent } from './scroller.component';
+import { ChangeDetectorRef, EventEmitter, OnDestroy, OnInit } from "@angular/core";
+import { SelectionType } from "../../types";
+import { RowHeightCache } from "../../utils";
+import { ScrollerComponent } from "./scroller.component";
 export declare class DataTableBodyComponent implements OnInit, OnDestroy {
     private cd;
     scrollbarV: boolean;
