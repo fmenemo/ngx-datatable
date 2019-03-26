@@ -1,11 +1,7 @@
-import {
-  Component, Output, EventEmitter, Input, HostBinding, ChangeDetectorRef,
-  ViewChild, OnInit, OnDestroy, ChangeDetectionStrategy
-} from '@angular/core';
-import { translateXY, columnsByPin, columnGroupWidths, RowHeightCache } from '../../utils';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { SelectionType } from '../../types';
+import { columnGroupWidths, columnsByPin, RowHeightCache, translateXY } from '../../utils';
 import { ScrollerComponent } from './scroller.component';
-import { MouseEvent } from '../../events';
 
 @Component({
   selector: 'datatable-body',
@@ -19,73 +15,133 @@ import { MouseEvent } from '../../events';
       [selectionType]="selectionType"
       [rowIdentity]="rowIdentity"
       (select)="select.emit($event)"
-      (activate)="activate.emit($event)">
-      <datatable-progress
-        *ngIf="loadingIndicator">
-      </datatable-progress>
+      (activate)="activate.emit($event)"
+    >
+      <datatable-progress *ngIf="loadingIndicator"> </datatable-progress>
       <datatable-scroller
         *ngIf="rows?.length"
         [scrollbarV]="scrollbarV"
         [scrollbarH]="scrollbarH"
         [scrollHeight]="scrollHeight"
         [scrollWidth]="columnGroupWidths?.total"
-        (scroll)="onBodyScroll($event)">
+        (scroll)="onBodyScroll($event)"
+      >
         <datatable-summary-row
           *ngIf="summaryRow && summaryPosition === 'top'"
           [rowHeight]="summaryHeight"
           [offsetX]="offsetX"
           [innerWidth]="innerWidth"
           [rows]="rows"
-          [columns]="columns">
+          [columns]="columns"
+        >
         </datatable-summary-row>
-        <datatable-row-wrapper
-          [groupedRows]="groupedRows"
-          *ngFor="let group of temp; let i = index; trackBy: rowTrackingFn;"
-          [innerWidth]="innerWidth"
-          [ngStyle]="getRowsStyles(group)"
-          [rowDetail]="rowDetail"
-          [groupHeader]="groupHeader"
-          [offsetX]="offsetX"
-          [detailRowHeight]="getDetailRowHeight(group[i],i)"
-          [row]="group"
-          [expanded]="getRowExpanded(group)"
-          [rowIndex]="getRowIndex(group[i])"
-          (rowContextmenu)="rowContextmenu.emit($event)">
-          <datatable-body-row
-            *ngIf="!groupedRows; else groupedRowsTemplate"
-            tabindex="-1"
-            [isSelected]="selector.getRowSelected(group)"
+        <div *ngIf="!rowsDraggable">
+          <datatable-row-wrapper
+            [groupedRows]="groupedRows"
+            *ngFor="let group of temp; let i = index; trackBy: rowTrackingFn"
             [innerWidth]="innerWidth"
+            [ngStyle]="getRowsStyles(group)"
+            [rowDetail]="rowDetail"
+            [groupHeader]="groupHeader"
             [offsetX]="offsetX"
-            [columns]="columns"
-            [rowHeight]="getRowHeight(group)"
+            [detailRowHeight]="getDetailRowHeight(group[i], i)"
             [row]="group"
-            [rowIndex]="getRowIndex(group)"
             [expanded]="getRowExpanded(group)"
-            [rowClass]="rowClass"
-            [displayCheck]="displayCheck"
-            [treeStatus]="group.treeStatus"
-            (treeAction)="onTreeAction(group)"
-            (activate)="selector.onActivate($event, indexes.first + i)">
-          </datatable-body-row>
-          <ng-template #groupedRowsTemplate>
+            [rowIndex]="getRowIndex(group[i])"
+            (rowContextmenu)="rowContextmenu.emit($event)"
+          >
             <datatable-body-row
-              *ngFor="let row of group.value; let i = index; trackBy: rowTrackingFn;"
+              *ngIf="!groupedRows; else groupedRowsTemplate"
               tabindex="-1"
-              [isSelected]="selector.getRowSelected(row)"
+              [isSelected]="selector.getRowSelected(group)"
               [innerWidth]="innerWidth"
               [offsetX]="offsetX"
               [columns]="columns"
-              [rowHeight]="getRowHeight(row)"
-              [row]="row"
-              [group]="group.value"
-              [rowIndex]="getRowIndex(row)"
-              [expanded]="getRowExpanded(row)"
+              [rowHeight]="getRowHeight(group)"
+              [row]="group"
+              [rowIndex]="getRowIndex(group)"
+              [expanded]="getRowExpanded(group)"
               [rowClass]="rowClass"
-              (activate)="selector.onActivate($event, i)">
+              [displayCheck]="displayCheck"
+              [treeStatus]="group.treeStatus"
+              (treeAction)="onTreeAction(group)"
+              (activate)="selector.onActivate($event, indexes.first + i)"
+            >
             </datatable-body-row>
-          </ng-template>
-        </datatable-row-wrapper>
+            <ng-template #groupedRowsTemplate>
+              <datatable-body-row
+                *ngFor="let row of group.value; let i = index; trackBy: rowTrackingFn"
+                tabindex="-1"
+                [isSelected]="selector.getRowSelected(row)"
+                [innerWidth]="innerWidth"
+                [offsetX]="offsetX"
+                [columns]="columns"
+                [rowHeight]="getRowHeight(row)"
+                [row]="row"
+                [group]="group.value"
+                [rowIndex]="getRowIndex(row)"
+                [expanded]="getRowExpanded(row)"
+                [rowClass]="rowClass"
+                (activate)="selector.onActivate($event, i)"
+              >
+              </datatable-body-row>
+            </ng-template>
+          </datatable-row-wrapper>
+        </div>
+        <div cdkDropList (cdkDropListDropped)="itemDropped($event)" *ngIf="rowsDraggable">
+          <datatable-row-wrapper
+            [groupedRows]="groupedRows"
+            *ngFor="let group of temp; let i = index; trackBy: rowTrackingFn"
+            [innerWidth]="innerWidth"
+            [ngStyle]="getRowsStyles(group)"
+            [rowDetail]="rowDetail"
+            [groupHeader]="groupHeader"
+            [offsetX]="offsetX"
+            [detailRowHeight]="getDetailRowHeight(group[i], i)"
+            [row]="group"
+            [expanded]="getRowExpanded(group)"
+            [rowIndex]="getRowIndex(group[i])"
+            (rowContextmenu)="rowContextmenu.emit($event)"
+            cdkDrag
+          >
+            <datatable-body-row
+              *ngIf="!groupedRows; else groupedRowsTemplate"
+              tabindex="-1"
+              [isSelected]="selector.getRowSelected(group)"
+              [innerWidth]="innerWidth"
+              [offsetX]="offsetX"
+              [columns]="columns"
+              [rowHeight]="getRowHeight(group)"
+              [row]="group"
+              [rowIndex]="getRowIndex(group)"
+              [expanded]="getRowExpanded(group)"
+              [rowClass]="rowClass"
+              [displayCheck]="displayCheck"
+              [treeStatus]="group.treeStatus"
+              (treeAction)="onTreeAction(group)"
+              (activate)="selector.onActivate($event, indexes.first + i)"
+            >
+            </datatable-body-row>
+            <ng-template #groupedRowsTemplate>
+              <datatable-body-row
+                *ngFor="let row of group.value; let i = index; trackBy: rowTrackingFn"
+                tabindex="-1"
+                [isSelected]="selector.getRowSelected(row)"
+                [innerWidth]="innerWidth"
+                [offsetX]="offsetX"
+                [columns]="columns"
+                [rowHeight]="getRowHeight(row)"
+                [row]="row"
+                [group]="group.value"
+                [rowIndex]="getRowIndex(row)"
+                [expanded]="getRowExpanded(row)"
+                [rowClass]="rowClass"
+                (activate)="selector.onActivate($event, i)"
+              >
+              </datatable-body-row>
+            </ng-template>
+          </datatable-row-wrapper>
+        </div>
         <datatable-summary-row
           *ngIf="summaryRow && summaryPosition === 'bottom'"
           [ngStyle]="getBottomSummaryRowStyles()"
@@ -93,23 +149,19 @@ import { MouseEvent } from '../../events';
           [offsetX]="offsetX"
           [innerWidth]="innerWidth"
           [rows]="rows"
-          [columns]="columns">
+          [columns]="columns"
+        >
         </datatable-summary-row>
       </datatable-scroller>
-      <div
-        class="empty-row"
-        *ngIf="!rows?.length && !loadingIndicator"
-        [innerHTML]="emptyMessage">
-      </div>
+      <div class="empty-row" *ngIf="!rows?.length && !loadingIndicator" [innerHTML]="emptyMessage"></div>
     </datatable-selection>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    class: 'datatable-body'
-  }
+    class: 'datatable-body',
+  },
 })
 export class DataTableBodyComponent implements OnInit, OnDestroy {
-
   @Input() scrollbarV: boolean;
   @Input() scrollbarH: boolean;
   @Input() loadingIndicator: boolean;
@@ -134,6 +186,7 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
   @Input() summaryRow: boolean;
   @Input() summaryPosition: string;
   @Input() summaryHeight: number;
+  @Input() rowsDraggable: boolean;
 
   @Input() set pageSize(val: number) {
     this._pageSize = val;
@@ -212,7 +265,7 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
   @Output() activate: EventEmitter<any> = new EventEmitter();
   @Output() select: EventEmitter<any> = new EventEmitter();
   @Output() detailToggle: EventEmitter<any> = new EventEmitter();
-  @Output() rowContextmenu = new EventEmitter<{ event: MouseEvent, row: any }>(false);
+  @Output() rowContextmenu = new EventEmitter<{ event: MouseEvent; row: any }>(false);
   @Output() treeAction: EventEmitter<any> = new EventEmitter();
 
   @ViewChild(ScrollerComponent) scroller: ScrollerComponent;
@@ -268,7 +321,6 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
         return idx;
       }
     }.bind(this);
-
   }
 
   /**
@@ -276,31 +328,29 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
     if (this.rowDetail) {
-      this.listener = this.rowDetail.toggle
-        .subscribe(({ type, value }: { type: string, value: any }) => {
-          if (type === 'row') this.toggleRowExpansion(value);
-          if (type === 'all') this.toggleAllRows(value);
+      this.listener = this.rowDetail.toggle.subscribe(({ type, value }: { type: string; value: any }) => {
+        if (type === 'row') this.toggleRowExpansion(value);
+        if (type === 'all') this.toggleAllRows(value);
 
-          // Refresh rows after toggle
-          // Fixes #883
-          this.updateIndexes();
-          this.updateRows();
-          this.cd.markForCheck();
-        });
+        // Refresh rows after toggle
+        // Fixes #883
+        this.updateIndexes();
+        this.updateRows();
+        this.cd.markForCheck();
+      });
     }
 
     if (this.groupHeader) {
-      this.listener = this.groupHeader.toggle
-        .subscribe(({ type, value }: { type: string, value: any }) => {
-          if (type === 'group') this.toggleRowExpansion(value);
-          if (type === 'all') this.toggleAllRows(value);
+      this.listener = this.groupHeader.toggle.subscribe(({ type, value }: { type: string; value: any }) => {
+        if (type === 'group') this.toggleRowExpansion(value);
+        if (type === 'all') this.toggleAllRows(value);
 
-          // Refresh rows after toggle
-          // Fixes #883
-          this.updateIndexes();
-          this.updateRows();
-          this.cd.markForCheck();
-        });
+        // Refresh rows after toggle
+        // Fixes #883
+        this.updateIndexes();
+        this.updateRows();
+        this.cd.markForCheck();
+      });
     }
   }
 
@@ -310,6 +360,24 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.rowDetail) this.listener.unsubscribe();
     if (this.groupHeader) this.listener.unsubscribe();
+  }
+
+  /**
+   * Reorders the rows with the new dragged element position
+   * @param e Event that has the previous index of the element dragged, and its new desired position
+   */
+  itemDropped(e) {
+    const modifiedRows = [...this._rows];
+    const element = modifiedRows[e.previousIndex];
+
+    modifiedRows.splice(e.previousIndex, 1);
+    const firstPiece = modifiedRows.slice(0, e.currentIndex);
+    const secondPiece = modifiedRows.slice(e.currentIndex);
+
+    const finalRows = firstPiece.concat([element]).concat(secondPiece);
+    this._rows = [...finalRows];
+
+    this.updateRows();
   }
 
   /**
@@ -343,7 +411,7 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
     if (this.offsetY !== scrollYPos || this.offsetX !== scrollXPos) {
       this.scroll.emit({
         offsetY: scrollYPos,
-        offsetX: scrollXPos
+        offsetX: scrollXPos,
       });
     }
 
@@ -386,7 +454,7 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
     // if grouprowsby has been specified treat row paging
     // parameters as group paging parameters ie if limit 10 has been
     // specified treat it as 10 groups rather than 10 rows
-    if(this.groupedRows) {
+    if (this.groupedRows) {
       let maxRowsPerGroup = 3;
       // if there is only one group set the maximum number of
       // rows per group the same as the total number of rows
@@ -469,7 +537,7 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
     if (!this.rowDetail) return 0;
     const rowHeight = this.rowDetail.rowHeight;
     return typeof rowHeight === 'function' ? rowHeight(row, index) : rowHeight;
-  }
+  };
 
   /**
    * Calculates the styles for the row so that the rows can be moved in 2D space
@@ -547,7 +615,7 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
    * Hides the loading indicator
    */
   hideIndicator(): void {
-    setTimeout(() => this.loadingIndicator = false, 500);
+    setTimeout(() => (this.loadingIndicator = false), 500);
   }
 
   /**
@@ -577,7 +645,7 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
       if (!this.externalPaging) {
         first = Math.max(this.offset * this.pageSize, 0);
       }
-      last = Math.min((first + this.pageSize), this.rowCount);
+      last = Math.min(first + this.pageSize, this.rowCount);
     }
 
     this.indexes = { first, last };
@@ -604,7 +672,7 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
         externalVirtual: this.scrollbarV && this.externalPaging,
         rowCount: this.rowCount,
         rowIndexes: this.rowIndexes,
-        rowExpansions: this.rowExpansions
+        rowExpansions: this.rowExpansions,
       });
     }
   }
@@ -651,7 +719,7 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
 
     this.detailToggle.emit({
       rows: [row],
-      currentIndex: viewPortFirstRowIndex
+      currentIndex: viewPortFirstRowIndex,
     });
   }
 
@@ -679,7 +747,7 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
     // Emit all rows that have been expanded.
     this.detailToggle.emit({
       rows: this.rows,
-      currentIndex: viewPortFirstRowIndex
+      currentIndex: viewPortFirstRowIndex,
     });
   }
 
@@ -707,12 +775,12 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
     const offsetX = this.offsetX;
 
     const styles = {
-      width: `${widths[group]}px`
+      width: `${widths[group]}px`,
     };
 
-    if(group === 'left') {
+    if (group === 'left') {
       translateXY(styles, offsetX, 0);
-    } else if(group === 'right') {
+    } else if (group === 'right') {
       const bodyWidth = parseInt(this.innerWidth + '', 0);
       const totalDiff = widths.total - bodyWidth;
       const offsetDiff = totalDiff - offsetX;
@@ -747,5 +815,4 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
   onTreeAction(row: any) {
     this.treeAction.emit({ row });
   }
-
 }

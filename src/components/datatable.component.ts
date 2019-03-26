@@ -1,26 +1,15 @@
-import {
-  Component, Input, Output, ElementRef, EventEmitter, ViewChild,
-  HostListener, ContentChildren, OnInit, QueryList, AfterViewInit,
-  HostBinding, ContentChild, TemplateRef, IterableDiffer,
-  DoCheck, KeyValueDiffers, KeyValueDiffer, ViewEncapsulation,
-  ChangeDetectionStrategy, ChangeDetectorRef, SkipSelf, OnDestroy
-} from '@angular/core';
-
-import {
-  forceFillColumnWidths, adjustColumnWidths, sortRows,
-  setColumnDefaults, throttleable, translateTemplates,
-  groupRowsByParents, optionalGetterForProp
-} from '../utils';
-import { ScrollbarHelper, DimensionsHelper, ColumnChangesService } from '../services';
-import { ColumnMode, SortType, SelectionType, TableColumn, ContextmenuType } from '../types';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, ContentChildren, DoCheck, ElementRef, EventEmitter, HostBinding, HostListener, Input, KeyValueDiffer, KeyValueDiffers, OnInit, Output, QueryList, SkipSelf, ViewChild, ViewEncapsulation } from '@angular/core';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { ColumnChangesService, DimensionsHelper, ScrollbarHelper } from '../services';
+import { ColumnMode, ContextmenuType, SelectionType, SortType, TableColumn } from '../types';
+import { adjustColumnWidths, forceFillColumnWidths, groupRowsByParents, optionalGetterForProp, setColumnDefaults, sortRows, throttleable, translateTemplates } from '../utils';
 import { DataTableBodyComponent } from './body';
 import { DatatableGroupHeaderDirective } from './body/body-group-header.directive';
 import { DataTableColumnDirective } from './columns';
-import { DatatableRowDetailDirective } from './row-detail';
 import { DatatableFooterDirective } from './footer';
 import { DataTableHeaderComponent } from './header';
-import { MouseEvent } from '../events';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { DatatableRowDetailDirective } from './row-detail';
+
 
 @Component({
   selector: 'ngx-datatable',
@@ -86,7 +75,8 @@ import { BehaviorSubject, Subscription } from 'rxjs';
         (rowContextmenu)="onRowContextmenu($event)"
         (select)="onBodySelect($event)"
         (scroll)="onBodyScroll($event)"
-        (treeAction)="onTreeAction($event)">
+        (treeAction)="onTreeAction($event)"
+        [rowsDraggable]="rowsDraggable">
       </datatable-body>
       <datatable-footer
         *ngIf="footerHeight"
@@ -119,6 +109,11 @@ export class DatatableComponent implements OnInit, DoCheck, AfterViewInit {
    * Template for the target marker of drag target columns.
    */
   @Input() targetMarkerTemplate: any;
+
+  /**
+   * Allow rows to be dragged and re-ordered accordingly
+   */
+  @Input() rowsDraggable: boolean;
 
   /**
    * Rows that are displayed in the table.

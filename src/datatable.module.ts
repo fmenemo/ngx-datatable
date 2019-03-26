@@ -1,55 +1,13 @@
-import { NgModule } from '@angular/core';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-
-import {
-  DatatableComponent,
-  DataTableColumnDirective,
-  DataTableHeaderComponent,
-  DataTableBodyComponent,
-  DataTableFooterComponent,
-  DataTableHeaderCellComponent,
-  DataTablePagerComponent,
-  DataTableBodyRowComponent,
-  DataTableRowWrapperComponent,
-  ProgressBarComponent,
-  DataTableBodyCellComponent,
-  DatatableRowDetailDirective,
-  DatatableGroupHeaderDirective,
-  ScrollerComponent,
-  DataTableSelectionComponent,
-  DataTableColumnHeaderDirective,
-  DataTableColumnCellDirective,
-  DataTableColumnCellTreeToggle,
-  DatatableRowDetailTemplateDirective,
-  DataTableFooterTemplateDirective,
-  DatatableFooterDirective,
-  DatatableGroupHeaderTemplateDirective,
-  DataTableSummaryRowComponent
-} from './components';
-
-import {
-  VisibilityDirective,
-  LongPressDirective,
-  ResizeableDirective,
-  OrderableDirective,
-  DraggableDirective
-} from './directives';
-
-import {
-  ScrollbarHelper,
-  DimensionsHelper,
-  ColumnChangesService
-} from './services';
+import { NgModule } from '@angular/core';
+import { DataTableBodyCellComponent, DataTableBodyComponent, DataTableBodyRowComponent, DataTableColumnCellDirective, DataTableColumnCellTreeToggle, DataTableColumnDirective, DataTableColumnHeaderDirective, DatatableComponent, DataTableFooterComponent, DatatableFooterDirective, DataTableFooterTemplateDirective, DatatableGroupHeaderDirective, DatatableGroupHeaderTemplateDirective, DataTableHeaderCellComponent, DataTableHeaderComponent, DataTablePagerComponent, DatatableRowDetailDirective, DatatableRowDetailTemplateDirective, DataTableRowWrapperComponent, DataTableSelectionComponent, DataTableSummaryRowComponent, ProgressBarComponent, ScrollerComponent } from './components';
+import { DraggableDirective, LongPressDirective, OrderableDirective, ResizeableDirective, VisibilityDirective } from './directives';
+import { ColumnChangesService, DimensionsHelper, ScrollbarHelper } from './services';
 
 @NgModule({
-  imports: [
-    CommonModule
-  ],
-  providers: [
-    ScrollbarHelper,
-    DimensionsHelper,
-    ColumnChangesService
-  ],
+  imports: [CommonModule, DragDropModule],
+  providers: [ScrollbarHelper, DimensionsHelper, ColumnChangesService],
   declarations: [
     DataTableFooterTemplateDirective,
     VisibilityDirective,
@@ -81,6 +39,7 @@ import {
     DataTableSummaryRowComponent,
   ],
   exports: [
+    DragDropModule,
     DatatableComponent,
     DatatableRowDetailDirective,
     DatatableGroupHeaderDirective,
@@ -92,7 +51,7 @@ import {
     DataTableFooterTemplateDirective,
     DatatableFooterDirective,
     DataTablePagerComponent,
-    DatatableGroupHeaderTemplateDirective
-  ]
+    DatatableGroupHeaderTemplateDirective,
+  ],
 })
-export class NgxDatatableModule { }
+export class NgxDatatableModule {}
