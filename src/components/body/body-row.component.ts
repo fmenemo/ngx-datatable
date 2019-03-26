@@ -1,25 +1,27 @@
-import {
-  Component, Input, HostBinding, ElementRef, Output, KeyValueDiffers, KeyValueDiffer,
-  EventEmitter, HostListener, ChangeDetectionStrategy, ChangeDetectorRef, DoCheck, SkipSelf
-} from '@angular/core';
-
-import {
-  columnsByPin, columnGroupWidths, columnsByPinArr, translateXY, Keys
-} from '../../utils';
-import { ScrollbarHelper } from '../../services';
-import { MouseEvent, KeyboardEvent, Event } from '../../events';
-import { TreeStatus } from '../../index';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, ElementRef, EventEmitter, HostBinding, HostListener, Input, KeyValueDiffer, KeyValueDiffers, Output, SkipSelf } from "@angular/core";
+import { TreeStatus } from "../../index";
+import { ScrollbarHelper } from "../../services";
+import { columnGroupWidths, columnsByPin, columnsByPinArr, Keys, translateXY } from "../../utils";
 
 @Component({
-  selector: 'datatable-body-row',
+  selector: "datatable-body-row",
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
-      *ngFor="let colGroup of _columnsByPin; let i = index; trackBy: trackByGroups"
-      class="datatable-row-{{colGroup.type}} datatable-row-group"
-      [ngStyle]="_groupStyles[colGroup.type]">
+      *ngFor="
+        let colGroup of _columnsByPin;
+        let i = index;
+        trackBy: trackByGroups
+      "
+      class="datatable-row-{{ colGroup.type }} datatable-row-group"
+      [ngStyle]="_groupStyles[colGroup.type]"
+    >
       <datatable-body-cell
-        *ngFor="let column of colGroup.columns; let ii = index; trackBy: columnTrackingFn"
+        *ngFor="
+          let column of colGroup.columns;
+          let ii = index;
+          trackBy: columnTrackingFn
+        "
         tabindex="-1"
         [row]="row"
         [group]="group"
@@ -31,13 +33,13 @@ import { TreeStatus } from '../../index';
         [displayCheck]="displayCheck"
         [treeStatus]="treeStatus"
         (activate)="onActivate($event, ii)"
-        (treeAction)="onTreeAction()">
+        (treeAction)="onTreeAction()"
+      >
       </datatable-body-cell>
     </div>
   `
 })
 export class DataTableBodyRowComponent implements DoCheck {
-
   @Input() set columns(val: any[]) {
     this._columns = val;
     this.recalculateColumns(val);
@@ -70,27 +72,29 @@ export class DataTableBodyRowComponent implements DoCheck {
   @Input() isSelected: boolean;
   @Input() rowIndex: number;
   @Input() displayCheck: any;
-  @Input() treeStatus: TreeStatus = 'collapsed';
+  @Input() treeStatus: TreeStatus = "collapsed";
 
   @Input()
   set offsetX(val: number) {
     this._offsetX = val;
     this.buildStylesByGroup();
   }
-  get offsetX() { return this._offsetX; }
+  get offsetX() {
+    return this._offsetX;
+  }
 
-  @HostBinding('class')
+  @HostBinding("class")
   get cssClass() {
-    let cls = 'datatable-body-row';
-    if (this.isSelected) cls += ' active';
-    if (this.rowIndex % 2 !== 0) cls += ' datatable-row-odd';
-    if (this.rowIndex % 2 === 0) cls += ' datatable-row-even';
+    let cls = "datatable-body-row";
+    if (this.isSelected) cls += " active";
+    if (this.rowIndex % 2 !== 0) cls += " datatable-row-odd";
+    if (this.rowIndex % 2 === 0) cls += " datatable-row-even";
 
     if (this.rowClass) {
       const res = this.rowClass(this.row);
-      if (typeof res === 'string') {
+      if (typeof res === "string") {
         cls += ` ${res}`;
-      } else if (typeof res === 'object') {
+      } else if (typeof res === "object") {
         const keys = Object.keys(res);
         for (const k of keys) {
           if (res[k] === true) cls += ` ${k}`;
@@ -101,10 +105,11 @@ export class DataTableBodyRowComponent implements DoCheck {
     return cls;
   }
 
-  @HostBinding('style.height.px')
-  @Input() rowHeight: number;
+  @HostBinding("style.height.px")
+  @Input()
+  rowHeight: number;
 
-  @HostBinding('style.width.px')
+  @HostBinding("style.width.px")
   get columnsTotalWidths(): string {
     return this._columnGroupWidths.total;
   }
@@ -118,7 +123,7 @@ export class DataTableBodyRowComponent implements DoCheck {
   _offsetX: number;
   _columns: any[];
   _innerWidth: number;
-  _groupStyles: {[prop: string]: {}} = {
+  _groupStyles: { [prop: string]: {} } = {
     left: {},
     center: {},
     right: {}
@@ -127,10 +132,11 @@ export class DataTableBodyRowComponent implements DoCheck {
   private _rowDiffer: KeyValueDiffer<{}, {}>;
 
   constructor(
-      private differs: KeyValueDiffers,
-      @SkipSelf() private scrollbarHelper: ScrollbarHelper,
-      private cd: ChangeDetectorRef,
-      element: ElementRef) {
+    private differs: KeyValueDiffers,
+    @SkipSelf() private scrollbarHelper: ScrollbarHelper,
+    private cd: ChangeDetectorRef,
+    element: ElementRef
+  ) {
     this._element = element.nativeElement;
     this._rowDiffer = differs.find({}).create();
   }
@@ -150,9 +156,9 @@ export class DataTableBodyRowComponent implements DoCheck {
   }
 
   buildStylesByGroup() {
-    this._groupStyles.left = this.calcStylesByGroup('left');
-    this._groupStyles.center = this.calcStylesByGroup('center');
-    this._groupStyles.right = this.calcStylesByGroup('right');
+    this._groupStyles.left = this.calcStylesByGroup("left");
+    this._groupStyles.center = this.calcStylesByGroup("center");
+    this._groupStyles.right = this.calcStylesByGroup("right");
     this.cd.markForCheck();
   }
 
@@ -164,10 +170,10 @@ export class DataTableBodyRowComponent implements DoCheck {
       width: `${widths[group]}px`
     };
 
-    if (group === 'left') {
+    if (group === "left") {
       translateXY(styles, offsetX, 0);
-    } else if (group === 'right') {
-      const bodyWidth = parseInt(this.innerWidth + '', 0);
+    } else if (group === "right") {
+      const bodyWidth = parseInt(this.innerWidth + "", 0);
       const totalDiff = widths.total - bodyWidth;
       const offsetDiff = totalDiff - offsetX;
       const offset = (offsetDiff + this.scrollbarHelper.width) * -1;
@@ -183,7 +189,7 @@ export class DataTableBodyRowComponent implements DoCheck {
     this.activate.emit(event);
   }
 
-  @HostListener('keydown', ['$event'])
+  @HostListener("keydown", ["$event"])
   onKeyDown(event: KeyboardEvent): void {
     const keyCode = event.keyCode;
     const isTargetRow = event.target === this._element;
@@ -200,7 +206,7 @@ export class DataTableBodyRowComponent implements DoCheck {
       event.stopPropagation();
 
       this.activate.emit({
-        type: 'keydown',
+        type: "keydown",
         event,
         row: this.row,
         rowElement: this._element
@@ -208,14 +214,14 @@ export class DataTableBodyRowComponent implements DoCheck {
     }
   }
 
-  @HostListener('mouseenter', ['$event'])
+  @HostListener("mouseenter", ["$event"])
   onMouseenter(event: any): void {
     this.activate.emit({
-        type: 'mouseenter',
-        event,
-        row: this.row,
-        rowElement: this._element
-      });
+      type: "mouseenter",
+      event,
+      row: this.row,
+      rowElement: this._element
+    });
   }
 
   recalculateColumns(val: any[] = this.columns): void {

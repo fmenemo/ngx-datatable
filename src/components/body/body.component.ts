@@ -114,6 +114,54 @@ import { ScrollerComponent } from "./scroller.component";
             cdkDrag
           >
             <div *cdkDragPreview></div>
+            <div
+              style="background: #7eb7ad;
+            border: dotted 2px #999;
+            min-height: 60px;
+            transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);"
+              *cdkDragPlaceholder
+            >
+              <datatable-body-row
+                *ngIf="!groupedRows; else groupedRowsTemplate"
+                tabindex="-1"
+                [isSelected]="selector.getRowSelected(group)"
+                [innerWidth]="innerWidth"
+                [offsetX]="offsetX"
+                [columns]="columns"
+                [rowHeight]="getRowHeight(group)"
+                [row]="group"
+                [rowIndex]="getRowIndex(group)"
+                [expanded]="getRowExpanded(group)"
+                [rowClass]="rowClass"
+                [displayCheck]="displayCheck"
+                [treeStatus]="group.treeStatus"
+                (treeAction)="onTreeAction(group)"
+                (activate)="selector.onActivate($event, indexes.first + i)"
+              >
+              </datatable-body-row>
+              <ng-template #groupedRowsTemplate>
+                <datatable-body-row
+                  *ngFor="
+                    let row of group.value;
+                    let i = index;
+                    trackBy: rowTrackingFn
+                  "
+                  tabindex="-1"
+                  [isSelected]="selector.getRowSelected(row)"
+                  [innerWidth]="innerWidth"
+                  [offsetX]="offsetX"
+                  [columns]="columns"
+                  [rowHeight]="getRowHeight(row)"
+                  [row]="row"
+                  [group]="group.value"
+                  [rowIndex]="getRowIndex(row)"
+                  [expanded]="getRowExpanded(row)"
+                  [rowClass]="rowClass"
+                  (activate)="selector.onActivate($event, i)"
+                >
+                </datatable-body-row>
+              </ng-template>
+            </div>
             <datatable-body-row
               *ngIf="!groupedRows; else groupedRowsTemplate"
               tabindex="-1"

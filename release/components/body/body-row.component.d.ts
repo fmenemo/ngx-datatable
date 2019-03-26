@@ -1,6 +1,6 @@
-import { ElementRef, KeyValueDiffers, EventEmitter, ChangeDetectorRef, DoCheck } from '@angular/core';
-import { ScrollbarHelper } from '../../services';
-import { TreeStatus } from '../../index';
+import { ChangeDetectorRef, DoCheck, ElementRef, EventEmitter, KeyValueDiffers } from "@angular/core";
+import { TreeStatus } from "../../index";
+import { ScrollbarHelper } from "../../services";
 export declare class DataTableBodyRowComponent implements DoCheck {
     private differs;
     private scrollbarHelper;
