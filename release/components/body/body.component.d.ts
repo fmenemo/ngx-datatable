@@ -1,6 +1,6 @@
-import { EventEmitter, ChangeDetectorRef, OnInit, OnDestroy } from '@angular/core';
-import { RowHeightCache } from '../../utils';
+import { ChangeDetectorRef, EventEmitter, OnDestroy, OnInit } from '@angular/core';
 import { SelectionType } from '../../types';
+import { RowHeightCache } from '../../utils';
 import { ScrollerComponent } from './scroller.component';
 export declare class DataTableBodyComponent implements OnInit, OnDestroy {
     private cd;
@@ -28,6 +28,7 @@ export declare class DataTableBodyComponent implements OnInit, OnDestroy {
     summaryRow: boolean;
     summaryPosition: string;
     summaryHeight: number;
+    rowsDraggable: boolean;
     pageSize: number;
     rows: any[];
     columns: any[];
@@ -84,6 +85,14 @@ export declare class DataTableBodyComponent implements OnInit, OnDestroy {
      * Called once, before the instance is destroyed.
      */
     ngOnDestroy(): void;
+    /**
+     * Reorders the rows with the new dragged element position
+     * @param e Event that has the previous index of the element dragged, and its new desired position
+     */
+    itemDropped(e: {
+        previousIndex: number;
+        currentIndex: number;
+    }): void;
     /**
      * Updates the Y offset given a new offset.
      */

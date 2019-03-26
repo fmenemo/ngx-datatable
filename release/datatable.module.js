@@ -6,8 +6,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var core_1 = require("@angular/core");
+var drag_drop_1 = require("@angular/cdk/drag-drop");
 var common_1 = require("@angular/common");
+var core_1 = require("@angular/core");
 var components_1 = require("./components");
 var directives_1 = require("./directives");
 var services_1 = require("./services");
@@ -16,14 +17,8 @@ var NgxDatatableModule = /** @class */ (function () {
     }
     NgxDatatableModule = __decorate([
         core_1.NgModule({
-            imports: [
-                common_1.CommonModule
-            ],
-            providers: [
-                services_1.ScrollbarHelper,
-                services_1.DimensionsHelper,
-                services_1.ColumnChangesService
-            ],
+            imports: [common_1.CommonModule, drag_drop_1.DragDropModule],
+            providers: [services_1.ScrollbarHelper, services_1.DimensionsHelper, services_1.ColumnChangesService],
             declarations: [
                 components_1.DataTableFooterTemplateDirective,
                 directives_1.VisibilityDirective,
@@ -55,6 +50,7 @@ var NgxDatatableModule = /** @class */ (function () {
                 components_1.DataTableSummaryRowComponent,
             ],
             exports: [
+                drag_drop_1.DragDropModule,
                 components_1.DatatableComponent,
                 components_1.DatatableRowDetailDirective,
                 components_1.DatatableGroupHeaderDirective,
@@ -66,8 +62,8 @@ var NgxDatatableModule = /** @class */ (function () {
                 components_1.DataTableFooterTemplateDirective,
                 components_1.DatatableFooterDirective,
                 components_1.DataTablePagerComponent,
-                components_1.DatatableGroupHeaderTemplateDirective
-            ]
+                components_1.DatatableGroupHeaderTemplateDirective,
+            ],
         })
     ], NgxDatatableModule);
     return NgxDatatableModule;

@@ -1,13 +1,13 @@
-import { ElementRef, EventEmitter, OnInit, QueryList, AfterViewInit, DoCheck, KeyValueDiffers, KeyValueDiffer, ChangeDetectorRef } from '@angular/core';
-import { ScrollbarHelper, DimensionsHelper, ColumnChangesService } from '../services';
-import { ColumnMode, SortType, SelectionType, TableColumn, ContextmenuType } from '../types';
+import { AfterViewInit, ChangeDetectorRef, DoCheck, ElementRef, EventEmitter, KeyValueDiffer, KeyValueDiffers, OnInit, QueryList } from '@angular/core';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { ColumnChangesService, DimensionsHelper, ScrollbarHelper } from '../services';
+import { ColumnMode, ContextmenuType, SelectionType, SortType, TableColumn } from '../types';
 import { DataTableBodyComponent } from './body';
 import { DatatableGroupHeaderDirective } from './body/body-group-header.directive';
 import { DataTableColumnDirective } from './columns';
-import { DatatableRowDetailDirective } from './row-detail';
 import { DatatableFooterDirective } from './footer';
 import { DataTableHeaderComponent } from './header';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { DatatableRowDetailDirective } from './row-detail';
 export declare class DatatableComponent implements OnInit, DoCheck, AfterViewInit {
     private scrollbarHelper;
     private dimensionsHelper;
@@ -17,6 +17,10 @@ export declare class DatatableComponent implements OnInit, DoCheck, AfterViewIni
      * Template for the target marker of drag target columns.
      */
     targetMarkerTemplate: any;
+    /**
+     * Allow rows to be dragged and re-ordered accordingly
+     */
+    rowsDraggable: boolean;
     /**
      * Rows that are displayed in the table.
      */

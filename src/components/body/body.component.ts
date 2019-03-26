@@ -366,7 +366,7 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
    * Reorders the rows with the new dragged element position
    * @param e Event that has the previous index of the element dragged, and its new desired position
    */
-  itemDropped(e) {
+  itemDropped(e: { previousIndex: number; currentIndex: number; }) {
     const modifiedRows = [...this._rows];
     const element = modifiedRows[e.previousIndex];
 
