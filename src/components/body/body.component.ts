@@ -115,7 +115,7 @@ import { ScrollerComponent } from "./scroller.component";
           >
             <div *cdkDragPreview></div>
             <div
-              style="background: #7eb7ad;
+              style="background: rgba(126, 183, 173, 0.1);
             border: dotted 2px #999;
             min-height: 60px;
             transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);"
