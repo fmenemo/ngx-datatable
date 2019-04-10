@@ -7,7 +7,7 @@ export declare class RowCssComponent {
     getRowClass(row: any): {
         'age-is-ten': boolean;
     };
-    getCellClass({row, column, value}: {
+    getCellClass({ row, column, value }: {
         row: any;
         column: any;
         value: any;

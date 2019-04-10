@@ -1,21 +1,20 @@
-export declare class BootstrapThemeComponent {
+export declare class RowDragComponent {
     rows: any[];
     loadingIndicator: boolean;
     reorderable: boolean;
     columns: ({
         prop: string;
-        summaryFunc: () => any;
         name?: undefined;
+        sortable?: undefined;
     } | {
         name: string;
-        summaryFunc: (cells: any) => string;
         prop?: undefined;
+        sortable?: undefined;
     } | {
         name: string;
-        summaryFunc: () => any;
+        sortable: boolean;
         prop?: undefined;
     })[];
     constructor();
     fetch(cb: any): void;
-    private summaryForGender;
 }

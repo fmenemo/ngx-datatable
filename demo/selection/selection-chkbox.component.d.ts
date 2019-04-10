@@ -3,7 +3,7 @@ export declare class CheckboxSelectionComponent {
     selected: any[];
     constructor();
     fetch(cb: any): void;
-    onSelect({selected}: {
+    onSelect({ selected }: {
         selected: any;
     }): void;
     onActivate(event: any): void;

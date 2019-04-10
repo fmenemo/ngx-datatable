@@ -1,7 +1,7 @@
-import { EventEmitter, ChangeDetectorRef, OnInit, OnDestroy } from '@angular/core';
-import { RowHeightCache } from '../../utils';
-import { SelectionType } from '../../types';
-import { ScrollerComponent } from './scroller.component';
+import { ChangeDetectorRef, EventEmitter, OnDestroy, OnInit } from "@angular/core";
+import { SelectionType } from "../../types";
+import { RowHeightCache } from "../../utils";
+import { ScrollerComponent } from "./scroller.component";
 export declare class DataTableBodyComponent implements OnInit, OnDestroy {
     private cd;
     scrollbarV: boolean;
@@ -28,6 +28,7 @@ export declare class DataTableBodyComponent implements OnInit, OnDestroy {
     summaryRow: boolean;
     summaryPosition: string;
     summaryHeight: number;
+    rowsDraggable: boolean;
     pageSize: number;
     rows: any[];
     columns: any[];
@@ -44,6 +45,7 @@ export declare class DataTableBodyComponent implements OnInit, OnDestroy {
         event: MouseEvent;
         row: any;
     }>;
+    treeAction: EventEmitter<any>;
     scroller: ScrollerComponent;
     /**
      * Returns if selection is enabled.
@@ -51,7 +53,7 @@ export declare class DataTableBodyComponent implements OnInit, OnDestroy {
     readonly selectEnabled: boolean;
     /**
      * Property that would calculate the height of scroll bar
-     * based on the row heights cache for virtual scroll. Other scenarios
+     * based on the row heights cache for virtual scroll and virtualization. Other scenarios
      * calculate scroll height automatically (as height will be undefined).
      */
     readonly scrollHeight: number | undefined;
@@ -71,6 +73,7 @@ export declare class DataTableBodyComponent implements OnInit, OnDestroy {
     _rowCount: number;
     _offset: number;
     _pageSize: number;
+    newRowsOrder: EventEmitter<any>;
     /**
      * Creates an instance of DataTableBodyComponent.
      */
@@ -83,6 +86,14 @@ export declare class DataTableBodyComponent implements OnInit, OnDestroy {
      * Called once, before the instance is destroyed.
      */
     ngOnDestroy(): void;
+    /**
+     * Reorders the rows with the new dragged element position
+     * @param e Event that has the previous index of the element dragged, and its new desired position
+     */
+    itemDropped(e: {
+        previousIndex: number;
+        currentIndex: number;
+    }): void;
     /**
      * Updates the Y offset given a new offset.
      */
@@ -197,4 +208,5 @@ export declare class DataTableBodyComponent implements OnInit, OnDestroy {
      * Gets the row index given a row
      */
     getRowIndex(row: any): number;
+    onTreeAction(row: any): void;
 }

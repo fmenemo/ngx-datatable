@@ -17,5 +17,5 @@ export declare class DarkThemeComponent {
     })[];
     constructor();
     fetch(cb: any): void;
-    private summaryForGender(cells);
+    private summaryForGender;
 }

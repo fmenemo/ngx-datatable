@@ -17,5 +17,5 @@ export declare class MockServerResultsService {
      * @param page The page data used to get the selected data from companyData
      * @returns {PagedData<CorporateEmployee>} An array of the selected data and page
      */
-    private getPagedData(page);
+    private getPagedData;
 }

@@ -7,6 +7,6 @@ export declare class SummaryRowCustomTemplateComponent implements OnInit {
     ngOnInit(): void;
     fetch(cb: any): void;
     getNames(): string[];
-    private summaryForGender(cells);
-    private avgAge(cells);
+    private summaryForGender;
+    private avgAge;
 }

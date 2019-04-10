@@ -14,6 +14,6 @@ export declare class SummaryRowSimpleComponent {
     constructor();
     fetch(cb: any): void;
     onSummaryStateChange(a: any): void;
-    private summaryForGender(cells);
-    private avgAge(cells);
+    private summaryForGender;
+    private avgAge;
 }
