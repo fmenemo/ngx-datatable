@@ -376,6 +376,8 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
   _offset: number;
   _pageSize: number;
 
+  @Output() newRowsOrder: EventEmitter<any> = new EventEmitter<any>();
+
   /**
    * Creates an instance of DataTableBodyComponent.
    */
@@ -450,6 +452,7 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
     this._rows = [...finalRows];
 
     this.updateRows();
+    this.newRowsOrder.emit(this._rows);
   }
 
   /**

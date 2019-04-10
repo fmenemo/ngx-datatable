@@ -34,6 +34,7 @@ var DataTableBodyComponent = /** @class */ (function () {
         this.indexes = {};
         this.rowIndexes = new Map();
         this.rowExpansions = new Map();
+        this.newRowsOrder = new core_1.EventEmitter();
         /**
          * Get the height of the detail row.
          */
@@ -221,6 +222,7 @@ var DataTableBodyComponent = /** @class */ (function () {
         var finalRows = firstPiece.concat([element]).concat(secondPiece);
         this._rows = finalRows.slice();
         this.updateRows();
+        this.newRowsOrder.emit(this._rows);
     };
     /**
      * Updates the Y offset given a new offset.
@@ -764,6 +766,10 @@ var DataTableBodyComponent = /** @class */ (function () {
         core_1.ViewChild(scroller_component_1.ScrollerComponent),
         __metadata("design:type", scroller_component_1.ScrollerComponent)
     ], DataTableBodyComponent.prototype, "scroller", void 0);
+    __decorate([
+        core_1.Output(),
+        __metadata("design:type", core_1.EventEmitter)
+    ], DataTableBodyComponent.prototype, "newRowsOrder", void 0);
     DataTableBodyComponent = __decorate([
         core_1.Component({
             selector: "datatable-body",
