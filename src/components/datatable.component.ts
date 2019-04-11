@@ -76,7 +76,8 @@ import { DatatableRowDetailDirective } from './row-detail';
         (select)="onBodySelect($event)"
         (scroll)="onBodyScroll($event)"
         (treeAction)="onTreeAction($event)"
-        [rowsDraggable]="rowsDraggable">
+        [rowsDraggable]="rowsDraggable"
+        (newRowsOrder)="newRowsOrder.emit($event)">
       </datatable-body>
       <datatable-footer
         *ngIf="footerHeight"
@@ -114,6 +115,11 @@ export class DatatableComponent implements OnInit, DoCheck, AfterViewInit {
    * Allow rows to be dragged and re-ordered accordingly
    */
   @Input() rowsDraggable: boolean;
+
+  /**
+   * Event emitted when re-ordering rows
+   */
+  @Output() newRowsOrder: EventEmitter<any> = new EventEmitter();
 
   /**
    * Rows that are displayed in the table.

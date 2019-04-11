@@ -46,6 +46,7 @@ export declare class DataTableBodyComponent implements OnInit, OnDestroy {
         row: any;
     }>;
     treeAction: EventEmitter<any>;
+    newRowsOrder: EventEmitter<any>;
     scroller: ScrollerComponent;
     /**
      * Returns if selection is enabled.
@@ -73,7 +74,6 @@ export declare class DataTableBodyComponent implements OnInit, OnDestroy {
     _rowCount: number;
     _offset: number;
     _pageSize: number;
-    newRowsOrder: EventEmitter<any>;
     /**
      * Creates an instance of DataTableBodyComponent.
      */

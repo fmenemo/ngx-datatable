@@ -1,13 +1,16 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation } from "@angular/core";
 
 @Component({
-  selector: 'row-drag-demo',
+  selector: "row-drag-demo",
   template: `
     <div>
       <h3>
         Row Drag Demo
         <small>
-          <a href="https://github.com/swimlane/ngx-datatable/blob/master/demo/basic/row-drag.component.ts" target="_blank">
+          <a
+            href="https://github.com/swimlane/ngx-datatable/blob/master/demo/basic/row-drag.component.ts"
+            target="_blank"
+          >
             Source
           </a>
         </small>
@@ -22,35 +25,37 @@ import { Component, ViewEncapsulation } from '@angular/core';
         [footerHeight]="50"
         [rowHeight]="'auto'"
         [reorderable]="reorderable"
-        [rowsDraggable]="true">
+        [rowsDraggable]="true"
+        (newRowsOrder)="checkNewRows($event)"
+      >
       </ngx-datatable>
     </div>
   `,
   encapsulation: ViewEncapsulation.None
-
 })
 export class RowDragComponent {
-
   rows = [];
   loadingIndicator: boolean = true;
   reorderable: boolean = true;
 
   columns = [
-    { prop: 'name' },
-    { name: 'Gender' },
-    { name: 'Company', sortable: false }
+    { prop: "name" },
+    { name: "Gender" },
+    { name: "Company", sortable: false }
   ];
 
   constructor() {
-    this.fetch((data) => {
+    this.fetch(data => {
       this.rows = data;
-      setTimeout(() => { this.loadingIndicator = false; }, 1500);
+      setTimeout(() => {
+        this.loadingIndicator = false;
+      }, 1500);
     });
   }
 
   fetch(cb) {
     const req = new XMLHttpRequest();
-    req.open('GET', `assets/data/company.json`);
+    req.open("GET", `assets/data/company.json`);
 
     req.onload = () => {
       cb(JSON.parse(req.response));
@@ -59,4 +64,7 @@ export class RowDragComponent {
     req.send();
   }
 
+  checkNewRows(event) {
+    console.log("Rows changed order event: ", event);
+  }
 }

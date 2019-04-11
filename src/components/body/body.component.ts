@@ -335,6 +335,7 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
     false
   );
   @Output() treeAction: EventEmitter<any> = new EventEmitter();
+  @Output() newRowsOrder: EventEmitter<any> = new EventEmitter();
 
   @ViewChild(ScrollerComponent) scroller: ScrollerComponent;
 
@@ -375,8 +376,6 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
   _rowCount: number;
   _offset: number;
   _pageSize: number;
-
-  @Output() newRowsOrder: EventEmitter<any> = new EventEmitter<any>();
 
   /**
    * Creates an instance of DataTableBodyComponent.
@@ -450,9 +449,9 @@ export class DataTableBodyComponent implements OnInit, OnDestroy {
 
     const finalRows = firstPiece.concat([element]).concat(secondPiece);
     this._rows = [...finalRows];
+    this.newRowsOrder.emit(this._rows);
 
     this.updateRows();
-    this.newRowsOrder.emit(this._rows);
   }
 
   /**

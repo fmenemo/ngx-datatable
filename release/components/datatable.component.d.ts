@@ -22,6 +22,10 @@ export declare class DatatableComponent implements OnInit, DoCheck, AfterViewIni
      */
     rowsDraggable: boolean;
     /**
+     * Event emitted when re-ordering rows
+     */
+    newRowsOrder: EventEmitter<any>;
+    /**
      * Rows that are displayed in the table.
      */
     /**
